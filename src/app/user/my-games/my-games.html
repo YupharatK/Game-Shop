@@ -1,0 +1,22 @@
+<div class="my-games-container">
+  <header class="page-header">
+    <h1>My Games</h1>
+    <p>You own {{ ownedGameCount }} games in your library</p>
+  </header>
+
+  <div class="filter-controls">
+    <select name="genre" id="genre-select">
+      <option value="">Genre</option>
+      <option value="action">Action</option>
+      <option value="fps">FPS</option>
+    </select>
+    <button class="filter-button active">All</button>
+  </div>
+
+  <div class="game-grid">
+    <div class="game-card" *ngFor="let game of myGames">
+      <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
+      <h3 class="game-title">{{ game.title }}</h3>
+    </div>
+  </div>
+</div>

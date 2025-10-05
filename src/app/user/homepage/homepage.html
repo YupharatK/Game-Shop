@@ -1,0 +1,39 @@
+<div class="shop-container">
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Unleash Your Inner Outlaw</h1>
+      <p>Ride into the untamed West, forge your own legend, and experience an epic tale of honor and loyalty.</p>
+      <button class="hero-button">Shop Now</button>
+    </div>
+  </section>
+
+  <section class="game-section">
+    <h2>Best Sellers</h2>
+    <div class="game-grid">
+      <div class="game-card" *ngFor="let game of bestSellers">
+        <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
+        <h3 class="game-title">{{ game.title }}</h3>
+        <p class="game-price">{{ game.price }}</p>
+        <div class="button-group">
+          <button class="btn-add">ADD</button>
+          <button class="btn-buy">BUY</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="game-section">
+    <h2>New Releases</h2>
+    <div class="game-grid">
+      <div class="game-card" *ngFor="let game of newReleases">
+        <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
+        <h3 class="game-title">{{ game.title }}</h3>
+        <p class="game-price">{{ game.price }}</p>
+        <div class="button-group">
+          <button class="btn-add">ADD</button>
+          <button class="btn-buy">BUY</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

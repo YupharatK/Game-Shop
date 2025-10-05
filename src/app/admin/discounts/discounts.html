@@ -1,0 +1,44 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>Discounts</h1>
+    <button class="btn-add-new" (click)="openDiscountForm()">
+      <fa-icon [icon]="faPlus"></fa-icon> Add New Discount Code
+    </button>
+  </header>
+
+  <section class="discounts-list">
+    <h2>Discount Codes</h2>
+    <div class="list-container">
+      <div class="list-row header">
+        <span>CODE NAME</span>
+        <span>DISCOUNT VALUE</span>
+        <span>TOTAL USES</span>
+        <span>REMAINING USES</span>
+        <span>EXPIRATION DATE</span>
+        <span>ACTIONS</span>
+      </div>
+      <div class="list-row" *ngFor="let code of discounts">
+        <span class="code-name">{{ code.codeName }}</span>
+        <span>{{ code.value }}</span>
+        <span>{{ code.totalUses }}</span>
+        <span>{{ code.remainingUses }}</span>
+        <span>{{ code.expirationDate }}</span>
+        <div class="actions">
+          <button class="action-btn edit" (click)="openDiscountForm(code)">
+            <fa-icon [icon]="faEdit"></fa-icon>
+          </button>
+          <button class="action-btn delete">
+            <fa-icon [icon]="faDelete"></fa-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-discount-form 
+  [isOpen]="isDiscountFormOpen" 
+  [discountToEdit]="currentDiscountForEdit" 
+  (closeModal)="closeDiscountForm()" 
+  (saveDiscount)="handleFormSave($event)">
+</app-discount-form>

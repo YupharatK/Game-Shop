@@ -1,0 +1,49 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onCancel()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>{{ gameToEdit ? 'Edit Game' : 'Add New Games' }}</h2>
+
+    <form class="game-form" [formGroup]="gameForm" (ngSubmit)="onSave()">
+      <div class="form-group">
+        <label for="game-title">Game Title</label>
+        <input type="text" id="game-title" placeholder="e.g Minecraft" formControlName="title">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input type="text" id="price" placeholder="1,000" formControlName="price">
+        </div>
+        <div class="form-group">
+          <label for="genre">Genre</label>
+          <select id="genre" formControlName="genre">
+            <option value="" disabled>Select genre</option>
+            <option value="Action">Action</option>
+            <option value="Open-World">Open-World</option>
+            <option value="Racing">Racing</option>
+            <option value="Sports">Sports</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" rows="4" placeholder="Description the games..." formControlName="description"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Image</label>
+        <div class="drop-zone">
+          <fa-icon [icon]="faCloudUpload"></fa-icon>
+          <span>Upload a picture drag PNG, JPE</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="btn-save" [disabled]="gameForm.invalid">
+          {{ gameToEdit ? 'Save Changes' : 'Save Game' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

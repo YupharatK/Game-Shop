@@ -1,0 +1,35 @@
+<div class="details-container">
+  <section class="main-info">
+    <div class="game-image-container">
+      <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
+    </div>
+    <div class="game-info">
+      <h1 class="game-title">{{ game.title }}</h1>
+      <p class="game-price">฿ {{ game.price }}</p>
+      <p class="game-genre">{{ game.genre }}</p>
+      <div class="actions">
+        <button class="btn btn-add">🛒 Add to Cart</button>
+        <button class="btn btn-buy">Buy Now !!</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="description-section">
+    <h2>Description</h2>
+    <p>{{ game.description }}</p>
+  </section>
+
+  <section class="details-section">
+    <h2>Details</h2>
+    <div class="details-table">
+      <div class="detail-item">
+        <span class="detail-key">Release Date</span>
+        <span class="detail-value">{{ game.releaseDate }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-key">Best Seller Rank</span>
+        <span class="detail-value">{{ game.bestSellerRank }}</span>
+      </div>
+    </div>
+  </section>
+</div>
