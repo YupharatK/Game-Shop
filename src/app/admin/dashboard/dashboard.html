@@ -2,12 +2,12 @@
   <header class="dashboard-header">
     <h1>Admin Dashboard</h1>
     <div class="admin-info">
-      <img src="https://via.placeholder.com/40" alt="Admin" class="avatar">
+      <img src="https://via.placeholder.com/40" alt="Admin" class="avatar" />
       <div>
-        <span class="username">Admin</span>
-        <span class="email">admin@gmail.com</span>
+        <span class="username">{{ (currentUser$ | async)?.username }}</span>
+        <span class="email">{{ (currentUser$ | async)?.email }}</span>
       </div>
-      <a href="#" class="logout-link">Log Out ⇥</a>
+      <button (click)="logout()" class="logout-link">Log Out ⇥</button>
     </div>
   </header>
 

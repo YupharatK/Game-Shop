@@ -1,5 +1,8 @@
 // src/app/admin/dashboard/dashboard.component.ts
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User } from '../../models/user.model'; 
+import { AuthService } from '../../auth/auth';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,4 +29,15 @@ export class DashboardComponent {
     { rank: '#9', title: 'House Flipper 2', sales: 320 },
     { rank: '#10', title: 'EA SPORTS FC 26', sales: 210 }
   ];
+// 1. สร้าง Observable เพื่อรับข้อมูลผู้ใช้
+  currentUser$: Observable<User | null>;
+
+// 2. Inject AuthService เข้ามาใน constructor
+  constructor(private authService: AuthService) {
+    this.currentUser$ = this.authService.currentUser$;
+  }
+
+   logout(): void {
+    this.authService.logout();
+  }
 }

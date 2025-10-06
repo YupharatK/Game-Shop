@@ -17,7 +17,10 @@ export class ConfigService {
   // Endpoint สำหรับส่วน Games (ตัวอย่าง)
   public readonly gamesEndpoints = {
     getAll: `${this.baseUrl}/api/games`,
-    getById: (id: string | number) => `${this.baseUrl}/api/games/${id}`
+    create: `${this.baseUrl}/api/games`,
+    getById: (id: string | number) => `${this.baseUrl}/api/games/${id}`,
+    updateById: (id: string | number) => `${this.baseUrl}/api/games/${id}`,
+    deleteById: (id: string | number) => `${this.baseUrl}/api/games/${id}`
   };
 
   // Endpoint สำหรับส่วน Users (ตัวอย่าง)

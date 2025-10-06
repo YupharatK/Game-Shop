@@ -9,11 +9,6 @@ import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
 import { AuthInterceptor } from './core/interceptors/auth-interceptor'; 
 
-
-
-
-
-
 @NgModule({
   declarations: [
     App,
