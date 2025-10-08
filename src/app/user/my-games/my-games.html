@@ -1,22 +1,28 @@
 <div class="my-games-container">
   <header class="page-header">
     <h1>My Games</h1>
-    <p>You own {{ ownedGameCount }} games in your library</p>
+    <!-- <p>You own {{ ownedGameCount }} games in your library</p> -->
   </header>
 
-  <div class="filter-controls">
-    <select name="genre" id="genre-select">
-      <option value="">Genre</option>
-      <option value="action">Action</option>
-      <option value="fps">FPS</option>
-    </select>
-    <button class="filter-button active">All</button>
-  </div>
+<!-- src/app/user/my-games/my-games.html -->
+<!-- src/app/user/my-games/my-games.html -->
+<div class="filter-controls">
+  <select #genreSel (change)="onGenreChange(genreSel.value)">
+    <option value="">Genre</option>
+    <option *ngFor="let g of genres" [value]="g">{{ g }}</option>
+  </select>
+  <button class="filter-button" [class.active]="!selectedGenre" (click)="showAll()">All</button>
+</div>
 
-  <div class="game-grid">
-    <div class="game-card" *ngFor="let game of myGames">
-      <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
+<div class="game-grid">
+  <div class="game-card" *ngFor="let game of filtered; trackBy: trackById">
+    <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
+    <div class="card-content">
       <h3 class="game-title">{{ game.title }}</h3>
+      <p class="game-genre">{{ game.game_type }}</p>
+      <p class="game-price">{{ game.price }}</p>
     </div>
   </div>
 </div>
+
+

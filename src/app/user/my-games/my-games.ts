@@ -1,5 +1,10 @@
 // src/app/user/my-games/my-games.component.ts
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { AuthService } from '../../auth/auth';
+import { GamesService } from '../gameservice';
+import { GameUi } from '../../models/game';
 
 @Component({
   selector: 'app-my-games',
@@ -7,16 +12,89 @@ import { Component } from '@angular/core';
   templateUrl: './my-games.html',
   styleUrls: ['./my-games.scss']
 })
-export class MyGames {
-  // ข้อมูลจำลองสำหรับเกมใน library ของผู้ใช้
-  myGames = [
-    { imageUrl: 'https://image.api.playstation.com/vulcan/ap/rnd/202503/2819/1651043aae33bdb6cf17d9992409d2ec5cc4856eb76228f6.png', title: 'Call of duty warzon' },
-    { imageUrl: 'https://upload.wikimedia.org/wikipedia/en/a/ab/Grounded_game_cover_art.jpg', title: 'Grounded' },
-    { imageUrl: 'https://image.api.playstation.com/vulcan/ap/rnd/202507/2917/3bcfe09c4fbb3890f6c45a5cf9464570e36f2b08770187a2.png', title: 'Battlefield 6' },
-    { imageUrl: 'https://upload.wikimedia.org/wikipedia/en/a/a5/Grand_Theft_Auto_V.png', title: 'Grand Theft Auto 5' },
-    { imageUrl: 'https://img.tapimg.net/market/images/FhGX9GUJBBPEbSBBTUQ4uT11xYkg.jpg', title: 'House Flipper 2' }
-  ];
+export class MyGames implements OnInit, OnDestroy {
+  allGames: GameUi[] = [];
+  filtered: GameUi[] = [];
+  genres: string[] = [];
+  selectedGenre = '';
+  loading = false;
+  error: string | null = null;
 
-  // ตัวแปรสำหรับนับจำนวนเกม
-  ownedGameCount = this.myGames.length;
+  private sub?: Subscription;
+
+  constructor(private auth: AuthService, private games: GamesService) {}
+
+  ngOnInit(): void {
+    console.log('[MyGames] ngOnInit');
+    this.loading = true;
+
+    this.sub = this.auth.currentUser$
+      .pipe(
+        tap(u => console.log('[MyGames] currentUser$', u)),
+        map(u => u?.id ?? null),
+        tap(id => console.log('[MyGames] extracted userId:', id)),
+        filter((id): id is number => typeof id === 'number'),
+        switchMap(id => this.games.getByUser(id)),
+        tap(rows => {
+          console.log('[MyGames] getByUser -> count:', rows?.length ?? 0);
+          if (rows?.length) {
+            console.log('[MyGames] sample row:', rows[0]);
+            console.table(
+              rows.map(({ id, title, game_type, price }) => ({ id, title, game_type, price }))
+            );
+          }
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.allGames = data;
+
+          const uniq = new Set(
+            data.map(g => (g.game_type ?? '').trim()).filter(v => !!v)
+          );
+          this.genres = Array.from(uniq).sort((a,b)=>a.localeCompare(b));
+          console.log('[MyGames] genres:', this.genres);
+
+          this.applyFilter();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('[MyGames] getByUser error:', err);
+          this.error = 'โหลดเกมของฉันไม่สำเร็จ';
+          this.loading = false;
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    console.log('[MyGames] ngOnDestroy -> unsubscribe');
+    this.sub?.unsubscribe();
+  }
+
+  onGenreChange(value: string) {
+    this.selectedGenre = value || '';
+    console.log('[MyGames] onGenreChange -> selectedGenre:', this.selectedGenre);
+    this.applyFilter();
+  }
+
+  showAll() {
+    this.selectedGenre = '';
+    console.log('[MyGames] showAll -> reset filter');
+    this.applyFilter();
+  }
+
+  private applyFilter() {
+    const g = this.selectedGenre.trim().toLowerCase();
+    if (!g) {
+      this.filtered = [...this.allGames];
+      console.log('[MyGames] applyFilter -> show all, count:', this.filtered.length);
+      return;
+    }
+
+    this.filtered = this.allGames.filter(x => (x.game_type || '').toLowerCase() === g);
+    console.log('[MyGames] applyFilter -> game_type:', this.selectedGenre, 'count:', this.filtered.length);
+    if (this.filtered.length) console.log('[MyGames] filtered sample:', this.filtered[0]);
+  }
+
+  trackById(_: number, it: GameUi) { return it.id; }
 }
