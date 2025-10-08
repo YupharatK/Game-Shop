@@ -40,18 +40,19 @@ export class GamesService {
   }
 
 
-  getByUser(userId: number): Observable<GameUi[]> {
-    return this.http.get<GameDto[]>(`${this.base}/api/games/users/${userId}`).pipe(
-      map(rows => rows.map(r => ({
-        id: r.id,
-        title: r.name,
-        game_type: r.game_type,
-        price: r.price,
-        imageUrl: r.image_url ?? '',
-        purchase_date: r.purchase_date
-      })))
-    );
-  }
+// games.service.ts
+getByUser(userId: number) {
+  return this.http.get<GameDto[]>(`${this.base}/api/games/users/${userId}`)
+    .pipe(map(rows => rows.map(r => ({
+      id: r.id,
+      title: r.name,
+      game_type: (r as any).game_type,
+      price: r.price,
+      imageUrl: r.image_url ?? '',
+      purchase_date: (r as any).purchase_date
+    }))));
+}
+
 }
 
  
