@@ -4,22 +4,20 @@
     <p>Filter and sort to find your next adventure</p>
   </header>
 
-  <div class="filter-controls">
-    <select name="genre" id="genre-select">
-      <option value="">Genre</option>
-      <option value="action">Action</option>
-      <option value="open-world">Open-World</option>
-      <option value="racing">Racing</option>
-      </select>
-    <button class="filter-button active">All</button>
-  </div>
+<div class="filter-controls">
+  <select #genreSel (change)="onGenreChange(genreSel.value)">
+    <option value="">Genre</option>
+    <option *ngFor="let g of genres" [value]="g">{{ g }}</option>
+  </select>
+  <button class="filter-button" [class.active]="!selectedGenre" (click)="showAll()">All</button>
+</div>
 
   <div class="game-grid">
-    <div class="game-card" *ngFor="let game of allGames">
+    <div class="game-card" *ngFor="let game of filtered">
       <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
       <div class="card-content">
         <h3 class="game-title">{{ game.title }}</h3>
-        <p class="game-genre">{{ game.genre }}</p>
+        <p class="game-genre">{{ game.game_type }}</p>
         <p class="game-price">{{ game.price }}</p>
         <div class="button-group">
           <button class="btn-add">ADD</button>
