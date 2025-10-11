@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { AdminRoutingModule } from './admin-routing-module';
 import { LayoutComponent } from './layout/layout';
@@ -13,6 +14,7 @@ import { UsersComponent } from './users/users';
 import { TransactionComponent } from './transaction/transaction';
 import { DiscountsComponent } from './discounts/discounts';
 import { DiscountFormComponent } from './discounts/discount-form/discount-form';
+import { SharedModule } from "../shared/shared-module";
 
 
 @NgModule({
@@ -31,8 +33,9 @@ import { DiscountFormComponent } from './discounts/discount-form/discount-form';
     AdminRoutingModule,
     FontAwesomeModule,
     ReactiveFormsModule,
-    RouterModule
-   
-  ]
+    RouterModule,
+    SharedModule,
+    FormsModule
+]
 })
 export class AdminModule { }

@@ -1,7 +1,9 @@
 // src/app/user/shop/shop.component.ts
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { GameUi } from '../../models/game';
 import { GamesService } from '../gameservice';
+import { CartService } from '../../shared/cart';
 
 @Component({
   selector: 'app-shop',
@@ -19,7 +21,11 @@ export class Shop implements OnInit {
   // '', 'Action', 'Open-World', ...
   selectedGenre = '';
 
-  constructor(private games: GamesService) {}
+   constructor(
+    private games: GamesService,
+    private cartService: CartService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     console.log('[Shop] ngOnInit');
@@ -96,5 +102,26 @@ export class Shop implements OnInit {
 
   trackById(_: number, it: GameUi) {
     return it.id;
+  }
+
+
+
+  // 4. สร้างเมธอดสำหรับปุ่ม "ADD"
+  addToCart(game: any, event: MouseEvent): void {
+    // ป้องกันไม่ให้ event click ลามไปถึง <a> ที่ครอบอยู่
+    event.preventDefault();
+    event.stopPropagation(); 
+    this.cartService.addItem(game);
+    // (Optional) อาจจะแสดง Notification ว่า "Added to cart!"
+    console.log(`${game.title} added to cart!`);
+  }
+
+  // 5. สร้างเมธอดสำหรับปุ่ม "BUY"
+  buyNow(game: any, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.cartService.clearCart(); // (Optional) ล้างตะกร้าก่อนเพิ่มของชิ้นใหม่
+    this.cartService.addItem(game);
+    this.router.navigate(['/shopping-cart']); // นำทางไปหน้าตะกร้า
   }
 }

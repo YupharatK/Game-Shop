@@ -49,4 +49,13 @@ export class CartService {
     // This logic needs to be implemented based on your item structure
     return this.itemsSubject.getValue().reduce((acc, item) => acc + parseFloat(item.price.replace(/,/g, '')), 0);
   }
+
+
+  getCurrentItems(): any[] {
+    return this.itemsSubject.getValue();
+  }
+
+   clearCart(): void {
+    this.itemsSubject.next([]);
+  }
 }

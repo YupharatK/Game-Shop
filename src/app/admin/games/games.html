@@ -9,16 +9,14 @@
   <section class="games-list">
     <div class="list-container">
       <div class="list-row" *ngFor="let game of games">
-        <span>{{ game.title }}</span>
-        <span>{{ game.genre }}</span>
-        <span>{{ game.releaseDate }}</span>
-        <div class="actions">
+        <span>{{ game.name }}</span> <span>{{ game.genre }}</span>
+        <span>{{ game.release_date | date:'yyyy-MM-dd' }}</span> <div class="actions">
           <button class="action-btn edit" (click)="openGameForm(game)">
             <fa-icon [icon]="faEdit"></fa-icon>
           </button>
            <button class="action-btn delete" (click)="openConfirmDialog(game)">
-      <fa-icon [icon]="faDelete"></fa-icon>
-    </button>
+            <fa-icon [icon]="faDelete"></fa-icon>
+           </button>
         </div>
       </div>
     </div>
@@ -31,3 +29,9 @@
   (closeModal)="closeGameForm()" 
   (saveGame)="handleFormSave($event)">
 </app-game-form>
+
+<app-confirm-dialog
+  [isOpen]="isConfirmDialogOpen"
+  [message]="'Are you sure you want to delete the game ' + (gameToDelete?.name || '') + '?'"
+  (confirmed)="handleConfirmation($event)">
+</app-confirm-dialog>

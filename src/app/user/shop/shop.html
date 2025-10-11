@@ -4,26 +4,33 @@
     <p>Filter and sort to find your next adventure</p>
   </header>
 
-<div class="filter-controls">
-  <select #genreSel (change)="onGenreChange(genreSel.value)">
-    <option value="">Genre</option>
-    <option *ngFor="let g of genres" [value]="g">{{ g }}</option>
-  </select>
-  <button class="filter-button" [class.active]="!selectedGenre" (click)="showAll()">All</button>
-</div>
+  <div class="filter-controls">
+    <select #genreSel (change)="onGenreChange(genreSel.value)">
+      <option value="">Genre</option>
+      <option *ngFor="let g of genres" [value]="g">{{ g }}</option>
+    </select>
+    <button class="filter-button" [class.active]="!selectedGenre" (click)="showAll()">All</button>
+  </div>
 
   <div class="game-grid">
-    <div class="game-card" *ngFor="let game of filtered">
-      <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
+  <a
+    *ngFor="let game of filtered"
+    [routerLink]="['/game-details', game.id]"
+    class="game-card-link"
+  >
+    <div class="game-card">
+      <img [src]="game.imageUrl" [alt]="game.title" class="game-image" />
       <div class="card-content">
         <h3 class="game-title">{{ game.title }}</h3>
         <p class="game-genre">{{ game.game_type }}</p>
-        <p class="game-price">{{ game.price }}</p>
+        <p class="game-price">{{ game.price | number : '1.2-2' }} THB</p>
+        
         <div class="button-group">
-          <button class="btn-add">ADD</button>
-          <button class="btn-buy">BUY</button>
+          <button class="btn-add" (click)="addToCart(game, $event)">ADD</button>
+          <button class="btn-buy" (click)="buyNow(game, $event)">BUY</button>
         </div>
-      </div>
+        </div>
     </div>
-  </div>
+  </a>
+</div>
 </div>

@@ -1,6 +1,7 @@
 // src/app/admin/transaction/transaction.component.ts
-import { Component } from '@angular/core';
-import { faSearch, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit } from '@angular/core';
+import { AdminService } from '../services/admin';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-transaction',
@@ -8,16 +9,47 @@ import { faSearch, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './transaction.html',
   styleUrls: ['./transaction.scss']
 })
-export class TransactionComponent {
-  faSearch = faSearch;
-  faCalendar = faCalendarAlt;
+export class TransactionComponent implements OnInit {
+  // ตัวแปรสำหรับเก็บค่าจากฟอร์ม
+  searchText: string = '';
+  selectedType: string = ''; // 'purchase', 'top-up', หรือ '' สำหรับทั้งหมด
 
-  // ข้อมูลธุรกรรมจำลอง
-  transactions = [
-    { username: 'john_doe', email: 'john.d@example.com', type: 'Purchase', details: 'Game: \'Cosmic Conquest\'', amount: -350, date: '2025-09-21' },
-    { username: 'jane_smith', email: 'jane.smith@example.com', type: 'Top-up', details: 'Added funds to wallet', amount: 500, date: '2025-09-22' },
-    { username: 'gamer_x', email: 'gamerx@email.com', type: 'Purchase', details: 'Game: \'Mystic Realms\'', amount: -200, date: '2025-09-23' },
-    { username: 'jane_smith', email: 'jane.smith@example.com', type: 'Top-up', details: 'Added funds to wallet', amount: 1000, date: '2025-09-23' },
-    { username: 'master_chief', email: 'mc117@email.com', type: 'Purchase', details: 'Game: \'Shadow Legends\'', amount: -200, date: '2025-09-23' }
-  ];
+  // ตัวแปรสำหรับเก็บข้อมูล
+  allTransactions: any[] = []; // เก็บ Transaction ทั้งหมดที่ดึงมาจาก API
+  filteredTransactions: any[] = []; // เก็บ Transaction ที่ผ่านการกรองแล้วเพื่อนำไปแสดงผล
+  isLoadingTransactions = false;
+  faSearch = faSearch;
+
+  constructor(private adminService: AdminService) {}
+
+  ngOnInit(): void {
+    // 1. เมื่อหน้าโหลดเสร็จ ให้ดึง Transaction ทั้งหมด
+    this.isLoadingTransactions = true;
+    this.adminService.getAllTransactions().subscribe(data => {
+      this.allTransactions = data;
+      this.filteredTransactions = data; // ตอนเริ่มต้นให้แสดงทั้งหมด
+      this.isLoadingTransactions = false;
+    });
+  }
+
+  // 2. ฟังก์ชันนี้จะทำงานเมื่อมีการเปลี่ยนแปลงค่าในช่องค้นหาหรือ Dropdown
+  applyFilters(): void {
+    let transactions = [...this.allTransactions];
+
+    // กรองด้วย Search Text (ค้นหาจาก username และ email)
+    if (this.searchText) {
+      const lowerCaseSearch = this.searchText.toLowerCase();
+      transactions = transactions.filter(tx =>
+        tx.username.toLowerCase().includes(lowerCaseSearch) ||
+        tx.email.toLowerCase().includes(lowerCaseSearch)
+      );
+    }
+
+    // กรองด้วยประเภท Transaction
+    if (this.selectedType) {
+      transactions = transactions.filter(tx => tx.type === this.selectedType);
+    }
+
+    this.filteredTransactions = transactions;
+  }
 }

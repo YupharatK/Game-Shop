@@ -9,9 +9,11 @@
   </div>
   <div class="navbar-right">
     <div class="search-bar">
-      <fa-icon class="search-icon" [icon]="faSearch"></fa-icon>
-      <input type="text" placeholder="Search" />
-    </div>
+      <form [formGroup]="searchForm" (ngSubmit)="onSearchSubmit()">
+        <fa-icon class="search-icon" [icon]="faSearch"></fa-icon>
+        <input type="text" placeholder="Search" formControlName="query" />
+      </form>
+      </div>
     <a (click)="toggleCart()" class="cart-icon">
       <fa-icon [icon]="faShoppingCart"></fa-icon>
     </a>
@@ -33,12 +35,14 @@
     </div>
     <div class="navbar-right">
       <div class="search-bar">
-        <fa-icon class="search-icon" [icon]="faSearch"></fa-icon>
-        <input type="text" placeholder="Search" />
+        <form [formGroup]="searchForm" (ngSubmit)="onSearchSubmit()">
+          <fa-icon class="search-icon" [icon]="faSearch"></fa-icon>
+          <input type="text" placeholder="Search" formControlName="query" />
+        </form>
       </div>
       <a (click)="toggleCart()" class="cart-icon">
-      <fa-icon [icon]="faShoppingCart"></fa-icon>
-    </a>
+        <fa-icon [icon]="faShoppingCart"></fa-icon>
+      </a>
       <a routerLink="/auth/login" class="login-button">Login</a>
     </div>
   </nav>

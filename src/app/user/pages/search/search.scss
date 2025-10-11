@@ -61,11 +61,6 @@ $text-muted: #aab2ff;
   gap: 1.5rem;
 }
 
-a.game-card-link {
-  text-decoration: none;
-  color: inherit; // ทำให้สีตัวอักษรเป็นไปตาม parent (game-card)
-}
-
 .game-card {
   background-color: $card-bg;
   border-radius: 10px;
@@ -136,5 +131,4 @@ a.game-card-link {
       &:hover { background-color: color.adjust($accent-blue, $lightness: 10%); }
     }
   }
-
 }

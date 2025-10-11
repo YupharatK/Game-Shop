@@ -8,6 +8,7 @@ import { MyGames } from './my-games/my-games';
 import { GameDetails } from './game-details/game-details';  // นำเข้า GameDetails component
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart';
 import { ProfileComponent } from './profile/profile.component';
+import { SearchComponent } from './pages/search/search';
 const routes: Routes = [
   {
     path: '',
@@ -20,7 +21,8 @@ const routes: Routes = [
       { path: 'my-games', component: MyGames },
       { path: 'game-details/:id', component: GameDetails }, // เพิ่มเส้นทางสำหรับ GameDetails
       { path: 'shopping-cart', component: ShoppingCartComponent }, // เพิ่มเส้นทางสำหรับ ShoppingCart
-      { path: 'profile', component: ProfileComponent } // เพิ่มเส้นทางสำหรับ Profile
+      { path: 'profile', component: ProfileComponent }, // เพิ่มเส้นทางสำหรับ Profile
+      { path: 'search', component: SearchComponent }
     ]
   }
 ];

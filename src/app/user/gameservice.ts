@@ -5,13 +5,14 @@ import { map, Observable, tap } from 'rxjs';
 
 import { GameDto, GameType, GameUi } from '../models/game';
 import { environment } from '../../environments/environment.development';
+import { ConfigService } from '../core/config'; // 2. ตรวจสอบว่ามี ConfigService
 
 @Injectable({ providedIn: 'root' })
 export class GamesService {
   // ควรเป็นโดเมนฐานแบบไม่มี slash ท้าย เช่น 'https://your-backend'
   private base = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private config: ConfigService) {}
 
   /** ดึงเกมทั้งหมด และ map เป็น GameUi ที่มีฟิลด์ game_type */
   getAll(): Observable<GameUi[]> {
@@ -52,6 +53,11 @@ getByUser(userId: number) {
       purchase_date: (r as any).purchase_date
     }))));
 }
+
+getById(id: number): Observable<any> {
+    const url = this.config.gamesEndpoints.getById(id);
+    return this.http.get<any>(url);
+  }
 
 }
 

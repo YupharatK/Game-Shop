@@ -2,10 +2,11 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../../auth/auth'; // <-- ตรวจสอบ Path ให้ถูกต้อง
-import { User } from '../../models/user.model';     // <-- ตรวจสอบ Path ให้ถูกต้อง
+import { AuthService } from '../../auth/auth';
+import { User } from '../../models/user.model';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { ModalService } from '../../core/services/modal';
+import { WalletService } from '../../services/wallet'; // <-- 1. Import WalletService
 
 @Component({
   selector: 'app-profile',
@@ -15,47 +16,91 @@ import { ModalService } from '../../core/services/modal';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-  // 1. สร้างตัวแปรเปล่าๆ เพื่อรอรับข้อมูลจริง
   user: User | null = null;
   faPencilAlt = faPencilAlt;
-
-
   private userSubscription: Subscription | undefined;
 
-  // ข้อมูล Transaction สามารถเก็บไว้เป็นข้อมูลจำลองก่อนได้
-  transactionHistory = [
-     { date: '2025-09-21', type: 'Purchase', description: 'Game: \'Cosmic Conquest\'', amount: -350 },
-     { date: '2025-09-22', type: 'Top-up', description: 'Added funds to wallet', amount: 500 },
-  ];
+  // 2. สร้างตัวแปรใหม่สำหรับเก็บข้อมูล Wallet และ Transaction
+  walletBalance: number = 0;
+  transactionHistory: any[] = []; // เริ่มต้นด้วย array ว่าง
+  isTopupModalOpen = false;
 
-  // 2. ฉีด AuthService เข้ามาเพื่อใช้งาน
   constructor(
     private authService: AuthService,
-    private modalService: ModalService // 2. Inject ModalService
+    private modalService: ModalService,
+    private walletService: WalletService // <-- 3. Inject WalletService
   ) {}
 
   ngOnInit(): void {
-    // 3. ดึงข้อมูลผู้ใช้ล่าสุดจาก AuthService มาใส่ในตัวแปร user ของเรา
+    // ดึงข้อมูลผู้ใช้จาก AuthService (เหมือนเดิม)
     this.userSubscription = this.authService.currentUser$.subscribe(currentUser => {
       this.user = currentUser;
-      console.log('Current user received in ProfileComponent:', this.user);
+    });
+
+    // 4. เรียกใช้ฟังก์ชันเพื่อดึงข้อมูล Wallet จาก API
+    this.loadWalletData();
+  }
+
+  // 5. สร้างฟังก์ชันสำหรับดึงข้อมูล Wallet และ Transaction
+  loadWalletData(): void {
+    this.walletService.getWalletData().subscribe({
+      next: (data) => {
+        this.walletBalance = data.wallet_balance;
+        this.transactionHistory = data.transaction_history;
+        console.log('Wallet data loaded:', data);
+      },
+      error: (err) => {
+        console.error('Failed to load wallet data:', err);
+        // (Optional) แสดงข้อความ Error ให้ผู้ใช้เห็น
+      }
+    });
+  }
+
+  // 6. สร้างฟังก์ชันสำหรับเติมเงิน
+  addFunds(amount: number): void {
+    this.walletService.topup(amount).subscribe({
+      next: (response) => {
+        console.log('Top-up successful!', response);
+        // อัปเดตยอดเงินในหน้าเว็บทันที
+        this.walletBalance = response.new_balance;
+        
+        // (Optional) โหลดประวัติ Transaction ใหม่อีกครั้งเพื่อให้แสดงรายการล่าสุด
+        this.loadWalletData();
+      },
+      error: (err) => {
+        console.error('Top-up failed:', err);
+        // (Optional) แสดงข้อความ Error ให้ผู้ใช้เห็น
+      }
     });
   }
 
   editProfile(): void {
-    console.log('Edit profile button clicked!');
     this.modalService.open('editProfileModal');
   }
 
-  // 4. เพิ่มฟังก์ชัน logout เข้ามา
   logout(): void {
     this.authService.logout();
   }
 
   ngOnDestroy(): void {
-    // 5. Unsubscribe เพื่อคืน Memory ให้กับระบบ
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
+  }
+
+
+  openTopupModal(): void {
+    this.isTopupModalOpen = true;
+  }
+
+  // ฟังก์ชันสำหรับปิด Topup Modal
+  closeTopupModal(): void {
+    this.isTopupModalOpen = false;
+  }
+
+  // ฟังก์ชันสำหรับรับค่าจาก Modal แล้วส่งไปเติมเงิน
+  handleTopupConfirmation(amount: number): void {
+    this.addFunds(amount);
+    this.closeTopupModal(); // ปิด Modal หลังยืนยัน
   }
 }

@@ -26,15 +26,16 @@
     <aside class="left-panel">
       <div class="balance-card">
         <p>Your current balance</p>
-        <span class="balance-amount">{{ user.wallet_balance | number:'1.2-2' }} Baht</span>
+        <span class="balance-amount">{{ walletBalance | number:'1.2-2' }} THB</span>
       </div>
+      
       <div class="add-funds">
         <p>Add Funds</p>
         <div class="fund-buttons">
-          <button>100 Baht</button>
-          <button>200 Baht</button>
-          <button>500 Baht</button>
-          <button class="active">Custom Amount</button>
+          <button (click)="addFunds(100)">100 THB</button>
+          <button (click)="addFunds(200)">200 THB</button>
+          <button (click)="addFunds(500)">500 THB</button>
+          <button class="active" (click)="openTopupModal()">Custom Amount</button>
         </div>
       </div>
     </aside>
@@ -50,7 +51,7 @@
             <span>AMOUNT</span>
           </div>
           <div class="history-item" *ngFor="let tx of transactionHistory">
-            <span>{{ tx.date }}</span>
+            <span>{{ tx.created_at | date:'yyyy-MM-dd' }}</span>
             <span>{{ tx.type }}</span>
             <span>{{ tx.description }}</span>
             <span [ngClass]="{'amount-positive': tx.amount > 0, 'amount-negative': tx.amount < 0}">
@@ -65,3 +66,8 @@
 </div>
 
 <app-edit-profile-modal [user]="user"></app-edit-profile-modal>
+<app-topup-modal
+  [isOpen]="isTopupModalOpen"
+  (closeModal)="closeTopupModal()"
+  (topupAmount)="handleTopupConfirmation($event)">
+</app-topup-modal>

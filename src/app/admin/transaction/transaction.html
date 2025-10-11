@@ -8,27 +8,28 @@
       <label>Search User</label>
       <div class="input-container">
         <fa-icon [icon]="faSearch"></fa-icon>
-        <input type="text" placeholder="Search by name or email">
+        <input 
+          type="text" 
+          placeholder="Search by name or email"
+          [(ngModel)]="searchText"
+          (input)="applyFilters()">
       </div>
     </div>
     <div class="filter-group">
       <label>Transaction Type</label>
-      <select>
-        <option value="">All Type</option>
+      <select [(ngModel)]="selectedType" (change)="applyFilters()">
+        <option value="">All Types</option>
         <option value="purchase">Purchase</option>
         <option value="top-up">Top-up</option>
       </select>
     </div>
-    <div class="filter-group">
-      <label>Date Range</label>
-      <div class="input-container">
-        <input type="text" placeholder="mm/dd/yyyy">
-        <fa-icon [icon]="faCalendar"></fa-icon>
-      </div>
-    </div>
   </section>
 
-  <section class="transaction-list">
+  <div *ngIf="isLoadingTransactions" class="loading-indicator">
+    Loading transactions...
+  </div>
+
+  <section class="transaction-list" *ngIf="!isLoadingTransactions">
     <div class="list-row header">
       <span>USERNAME</span>
       <span>EMAIL</span>
@@ -37,7 +38,7 @@
       <span>AMOUNT</span>
       <span>DATE</span>
     </div>
-    <div class="list-row" *ngFor="let tx of transactions">
+    <div class="list-row" *ngFor="let tx of filteredTransactions">
       <span class="username">{{ tx.username }}</span>
       <span>{{ tx.email }}</span>
       <span>{{ tx.type }}</span>
@@ -46,6 +47,9 @@
         {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount | number:'1.2-2' }} ฿
       </span>
       <span>{{ tx.date }}</span>
+    </div>
+    <div *ngIf="filteredTransactions.length === 0" class="no-results">
+      No transactions found.
     </div>
   </section>
 </div>

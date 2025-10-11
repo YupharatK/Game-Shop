@@ -18,6 +18,8 @@ import { GameDetails } from './game-details/game-details';
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart';
 import { ProfileComponent} from './profile/profile.component';
 import { EditProfileModalComponent } from './edit-profile-modal/edit-profile-modal';
+import { SearchComponent } from './pages/search/search';
+import { TopupModalComponent } from './profile/topup-modal/topup-modal';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { EditProfileModalComponent } from './edit-profile-modal/edit-profile-mod
     GameDetails,
     ShoppingCartComponent,
     ProfileComponent,
-    EditProfileModalComponent
+    EditProfileModalComponent,
+    SearchComponent,
+    TopupModalComponent
   ],
   imports: [
     CommonModule,
