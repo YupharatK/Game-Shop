@@ -1,16 +1,19 @@
 /* src/app/admin/transaction/transaction.component.scss */
 $card-bg: #141852;
-$text-color: #FFFFFF;
+$text-color: #ffffff;
 $text-muted: #aab2ff;
 $border-color: #2a2e6e;
-$amount-positive: #4CAF50;
-$amount-negative: #F44336;
+$amount-positive: #4caf50;
+$amount-negative: #f44336;
 
 .page-header {
   border-bottom: 1px solid $border-color;
   padding-bottom: 1.5rem;
   margin-bottom: 2rem;
-  h1 { margin: 0; font-size: 2.2rem; }
+  h1 {
+    margin: 0;
+    font-size: 2.2rem;
+  }
 }
 
 .filter-bar {
@@ -25,7 +28,8 @@ $amount-negative: #F44336;
     color: $text-muted;
   }
 
-  .input-container, select {
+  .input-container,
+  select {
     display: flex;
     align-items: center;
     background-color: $card-bg;
@@ -46,7 +50,9 @@ $amount-negative: #F44336;
     color: $text-color;
     padding: 0.8rem;
     font-size: 1rem;
-    &:focus { outline: none; }
+    &:focus {
+      outline: none;
+    }
   }
 }
 
@@ -62,14 +68,25 @@ $amount-negative: #F44336;
   align-items: center;
   padding: 1.2rem 1.5rem;
   border-bottom: 1px solid $border-color;
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 
   &.header {
     font-weight: 600;
     color: $text-muted;
   }
-  .username { font-weight: 500; }
-  .amount { text-align: right; }
-  .amount-positive { color: $amount-positive; }
-  .amount-negative { color: $amount-negative; }
+  .username {
+    font-weight: 500;
+  }
+  span:nth-child(4),
+  span:nth-child(5) {
+    text-align: right;
+  }
+  .amount-positive {
+    color: $amount-positive;
+  }
+  .amount-negative {
+    color: $amount-negative;
+  }
 }

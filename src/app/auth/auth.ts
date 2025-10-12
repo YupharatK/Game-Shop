@@ -101,4 +101,9 @@ export class AuthService {
     // ส่งข้อมูล user ใหม่ออกไปให้ทั่วทั้งแอปรับรู้
     this.currentUserSubject.next(user);
   }
+
+  public getToken(): string | null {
+  const user = this.currentUserValue;
+  return user?.token ?? null;
+  }
 }

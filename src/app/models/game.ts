@@ -16,6 +16,7 @@ export interface GameUi {
   game_type: string;       // <<< ใช้ชื่อนี้ใน UI
   price: number;
   imageUrl: string;
+  isOwned?: boolean; 
 }
 
 

@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { GameUi } from '../../models/game';
 import { GamesService } from '../gameservice';
 import { CartService } from '../../shared/cart';
-
+import { LibraryService } from '../../services/library';
+import { forkJoin } from 'rxjs';    
 @Component({
   selector: 'app-shop',
   standalone: false,
@@ -24,7 +25,8 @@ export class Shop implements OnInit {
    constructor(
     private games: GamesService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private libraryService: LibraryService 
   ) {}
 
   ngOnInit(): void {
@@ -35,36 +37,31 @@ export class Shop implements OnInit {
   fetch(): void {
     this.loading = true;
     this.error = null;
-    console.log('[Shop] fetch -> calling getAll()');
 
-    this.games.getAll().subscribe({
-      next: (data) => {
-        console.log('[Shop] /api/games -> count:', data?.length ?? 0);
-        if (data && data.length) {
-          console.log('[Shop] sample row (mapped GameUi):', data[0]);
-          // ถ้าจะดูทุกแถวแบบย่อ:
-          console.table(
-            data.map(({ id, title, game_type, price }) => ({ id, title, game_type, price }))
-          );
-        }
+    // ใช้ forkJoin เพื่อดึงข้อมูลเกมทั้งหมด และข้อมูลเกมในคลัง มาพร้อมๆ กัน
+    forkJoin({
+      games: this.games.getAll(),
+      ownedIds: this.libraryService.getOwnedGameIds()
+    }).subscribe({
+      next: ({ games, ownedIds }) => {
+        // แปลง array of owned IDs ให้เป็น Set เพื่อให้ค้นหาได้เร็วขึ้น
+        const ownedIdSet = new Set(ownedIds);
 
-        this.allGames = data ?? [];
+        // เพิ่ม property 'isOwned' เข้าไปใน object ของเกมแต่ละชิ้น
+        this.allGames = games.map(game => ({
+          ...game,
+          isOwned: ownedIdSet.has(game.id)
+        }));
 
-        // สกัดรายชื่อประเภท (มาจาก game_type ใน GameUi)
-        const uniq = new Set(
-          this.allGames
-            .map(g => (g.game_type ?? '').trim())
-            .filter((v): v is string => !!v)
-        );
+        // (ส่วนที่เหลือของโค้ดเหมือนเดิม)
+        const uniq = new Set(this.allGames.map(g => (g.game_type ?? '').trim()).filter(v => !!v));
         this.genres = Array.from(uniq).sort((a, b) => a.localeCompare(b));
-
-        console.log('[Shop] genres (unique):', this.genres);
-
+        
         this.applyFilter();
         this.loading = false;
       },
       error: (err) => {
-        console.error('[Shop] getAll error:', err);
+        console.error('[Shop] fetch error:', err);
         this.error = 'โหลดข้อมูลเกมไม่สำเร็จ';
         this.loading = false;
       }

@@ -47,6 +47,11 @@ export class ConfigService {
     checkout: `${this.baseUrl}/api/orders/checkout`
   };
 
+public readonly libraryEndpoints = {
+    get: `${this.baseUrl}/api/library`
+  };
+
+
   public readonly adminEndpoints = {
     getAllUsers: `${this.baseUrl}/api/admin/users`,
     getAllTransactions: `${this.baseUrl}/api/admin/transactions`, 

@@ -1,34 +1,28 @@
-// src/app/core/interceptors/auth.interceptor.ts
+// src/app/core/interceptors/auth-interceptor.ts
 import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor
-} from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/auth'; // Import AuthService ของคุณ
+import { AuthService } from '../../auth/auth'; // ตรวจสอบ Path ให้ถูกต้อง
 
 @Injectable()
-export class AuthInterceptor implements HttpInterceptor {
+export class AuthInterceptor implements HttpInterceptor { // <-- กลับมาเป็น Class
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {} // <-- ใช้ constructor เหมือนเดิม
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // 1. ดึงข้อมูลผู้ใช้ปัจจุบันจาก AuthService
-    const currentUser = this.authService.currentUserValue;
+    const authToken = this.authService.getToken();
+    console.log(`%c[AuthInterceptor] Intercepting: ${request.method} ${request.url}`, 'color: orange;');
+    console.log('%c[AuthInterceptor] Token from AuthService:', 'color: orange;', authToken);
 
-    // 2. ตรวจสอบว่ามีผู้ใช้ login อยู่ และมี token หรือไม่
-    if (currentUser && currentUser.token) {
-      // 3. ถ้ามี token, ให้ clone request เดิมแล้วเพิ่ม Authorization Header เข้าไป
-      request = request.clone({
+    if (authToken) {
+       console.log('%c[AuthInterceptor] Token exists. Adding Authorization header.', 'color: lightgreen;');
+      const authReq = request.clone({
         setHeaders: {
-          Authorization: `Bearer ${currentUser.token}`
+          Authorization: `Bearer ${authToken}`
         }
       });
+      return next.handle(authReq);
     }
-
-    // 4. ส่ง request ที่อาจจะถูกแก้ไขแล้ว (หรือ request เดิมถ้าไม่มี token) ไปทำงานต่อ
     return next.handle(request);
   }
 }

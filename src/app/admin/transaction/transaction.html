@@ -20,7 +20,7 @@
       <select [(ngModel)]="selectedType" (change)="applyFilters()">
         <option value="">All Types</option>
         <option value="purchase">Purchase</option>
-        <option value="top-up">Top-up</option>
+        <option value="topup">Top-up</option>
       </select>
     </div>
   </section>
@@ -34,20 +34,20 @@
       <span>USERNAME</span>
       <span>EMAIL</span>
       <span>TRANSACTION TYPE</span>
-      <span>DETAILS</span>
       <span>AMOUNT</span>
       <span>DATE</span>
     </div>
+
     <div class="list-row" *ngFor="let tx of filteredTransactions">
       <span class="username">{{ tx.username }}</span>
       <span>{{ tx.email }}</span>
       <span>{{ tx.type }}</span>
-      <span>{{ tx.details }}</span>
       <span class="amount" [ngClass]="{'amount-positive': tx.amount > 0, 'amount-negative': tx.amount < 0}">
         {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount | number:'1.2-2' }} ฿
       </span>
       <span>{{ tx.date }}</span>
     </div>
+
     <div *ngIf="filteredTransactions.length === 0" class="no-results">
       No transactions found.
     </div>

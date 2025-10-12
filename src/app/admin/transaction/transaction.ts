@@ -47,7 +47,9 @@ export class TransactionComponent implements OnInit {
 
     // กรองด้วยประเภท Transaction
     if (this.selectedType) {
-      transactions = transactions.filter(tx => tx.type === this.selectedType);
+     transactions = transactions.filter(tx => 
+        tx.type && tx.type.toLowerCase() === this.selectedType.toLowerCase()
+      );
     }
 
     this.filteredTransactions = transactions;

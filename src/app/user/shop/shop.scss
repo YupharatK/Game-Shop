@@ -18,6 +18,9 @@ $text-muted: #aab2ff;
 
 .shop-page-container {
   padding: 2rem 5%;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 80px); // 1. กำหนดความสูงขั้นต่ำ
 }
 
 .browse-header {
@@ -56,12 +59,14 @@ $text-muted: #aab2ff;
 }
 
 .game-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  display: flex;     // 1. เปลี่ยนเป็น Flexbox
+  flex-wrap: wrap; // 2. ให้บรรทัดใหม่เมื่อพื้นที่ไม่พอ
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
 }
 
 a.game-card-link {
+  flex: 0 1 240px;
   text-decoration: none;
   color: inherit; // ทำให้สีตัวอักษรเป็นไปตาม parent (game-card)
 }
@@ -73,6 +78,7 @@ a.game-card-link {
   transition: transform 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
+  height: 100%;
 
   &:hover {
     transform: translateY(-10px);
@@ -137,4 +143,20 @@ a.game-card-link {
     }
   }
 
+}
+
+// ในไฟล์ shop.scss (เพิ่มไว้ท้ายไฟล์ได้เลย)
+
+.owned-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  background-color: #2a2e6e; // สีพื้นหลังที่เข้ากับธีม
+  color: #aab2ff; // สีตัวอักษรที่เข้ากับธีม
+  border-radius: 5px;
+  font-weight: 600;
+  margin-top: 10px; // ระยะห่างจากราคา
+  text-align: center;
+  cursor: default; // เปลี่ยน cursor เป็นปกติเพราะกดไม่ได้
 }

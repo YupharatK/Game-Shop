@@ -2,6 +2,7 @@
 import { Component } from '@angular/core';
 import { CartService} from '../cart';
 import { Observable } from 'rxjs';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-cart',
@@ -12,7 +13,7 @@ import { Observable } from 'rxjs';
 export class CartComponent {
   isCartOpen$: Observable<boolean>;
   items$: Observable<any[]>;
-
+   faTrash = faTrash;
   constructor(private cart: CartService) {
     this.isCartOpen$ = this.cart.isCartOpen$;
     this.items$ = this.cart.items$;
