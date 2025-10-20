@@ -5,6 +5,7 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../auth/auth';
 import { GamesService } from '../gameservice';
 import { GameUi } from '../../models/game';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-my-games',
@@ -22,7 +23,7 @@ export class MyGames implements OnInit, OnDestroy {
 
   private sub?: Subscription;
 
-  constructor(private auth: AuthService, private games: GamesService) {}
+  constructor(private auth: AuthService, private games: GamesService, private router: Router) {}
 
   ngOnInit(): void {
     console.log('[MyGames] ngOnInit');
@@ -96,5 +97,8 @@ export class MyGames implements OnInit, OnDestroy {
     if (this.filtered.length) console.log('[MyGames] filtered sample:', this.filtered[0]);
   }
 
+    openDetails(id: number) {
+    this.router.navigate(['/game', id]);
+  }
   trackById(_: number, it: GameUi) { return it.id; }
 }

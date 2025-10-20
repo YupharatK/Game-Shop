@@ -8,6 +8,7 @@
         <div class="header-price">PRICE</div>
         <div class="header-total">TOTAL</div>
       </div>
+
       <div class="cart-item" *ngFor="let item of (items$ | async)">
         <div class="item-product">
           <img [src]="item.imageUrl" [alt]="item.title">
@@ -24,22 +25,41 @@
         </div>
       </div>
     </div>
+
     <div class="cart-summary">
       <div class="discount-section">
         <label for="discount-code">Discount Code</label>
         <div class="discount-input-group">
-          <input type="text" id="discount-code" placeholder="Enter code">
-          <button>Apply</button>
+          <!-- ผูก ngModel และ Enter เพื่อ Apply -->
+          <input
+            type="text"
+            id="discount-code"
+            placeholder="Enter code"
+            [(ngModel)]="discountCode"
+            (keyup.enter)="applyDiscount()"
+          >
+          <button type="button" (click)="applyDiscount()" [disabled]="loadingDiscount">Apply</button>
+        </div>
+
+        <!-- สถานะตรวจโค้ด -->
+        <div class="discount-status" *ngIf="discountMessage">
+          {{ discountMessage }}
+        </div>
+        <!-- แสดงโค้ดที่ใช้แล้ว -->
+        <div class="discount-active" *ngIf="appliedCode">
+          Applied: <strong>{{ appliedCode }}</strong> ({{ appliedPercent }}%)
+          <button type="button" (click)="clearDiscount()" class="link-btn">Remove</button>
         </div>
       </div>
+
       <div class="price-summary">
         <div class="summary-row">
           <span>Subtotal</span>
           <span>{{ subtotal | number:'1.2-2' }} ฿</span>
         </div>
-        <div class="summary-row">
+        <div class="summary-row" *ngIf="discountAmount > 0">
           <span>Discount</span>
-          <span>{{ discount | number:'1.2-2' }} ฿</span>
+          <span>-{{ discountAmount | number:'1.2-2' }} ฿</span>
         </div>
         <div class="summary-row total">
           <span>Total</span>

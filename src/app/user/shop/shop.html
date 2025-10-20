@@ -13,7 +13,9 @@
   </div>
 
   <div class="game-grid">
-    <a *ngFor="let game of filtered" [routerLink]="['/game-details', game.id]" class="game-card-link">
+    <a *ngFor="let game of filtered" [routerLink]="['/game-details', game.id]"
+    role="link"
+    [state]="{ from: 'library' }" class="game-card-link">
       <div class="game-card">
         <img [src]="game.imageUrl" [alt]="game.title" class="game-image" />
         <div class="card-content">

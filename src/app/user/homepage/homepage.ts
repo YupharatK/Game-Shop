@@ -1,6 +1,17 @@
-// src/app/user/shop/shop.component.ts
+import { Component, OnInit } from '@angular/core';
+import { GamesService } from '../gameservice';
+import { LibraryService } from '../../services/library';
+import { of, forkJoin } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-import { Component } from '@angular/core';
+type CardGame = {
+  id: number;
+  imageUrl: string;
+  title: string;
+  price: number | string;
+  qty_sold?: number;  // ✅ เพิ่ม field สำหรับยอดขาย
+  isOwned?: boolean;
+};
 
 @Component({
   selector: 'app-homepage',
@@ -8,24 +19,58 @@ import { Component } from '@angular/core';
   templateUrl: './homepage.html',
   styleUrls: ['./homepage.scss']
 })
-export class HomepageComponent {
+export class HomepageComponent implements OnInit {
+  bestSellers: CardGame[] = [];
+  loadingTop = false;
+  topError: string | null = null;
 
-  // ข้อมูลจำลองสำหรับส่วน Best Sellers
-  // ข้อมูลจำลองสำหรับส่วน Best Sellers
-  bestSellers = [
-    { imageUrl: 'https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08519_00/12/i_3da1cf7c41dc7652f9b639e1680d96436773658668c7dc3930c441291095713b/i/icon0.png', title: 'Red Dead Redemption 2', price: '609.09 B' },
-    { imageUrl: 'https://image.api.playstation.com/vulcan/ap/rnd/202009/3021/BtsjAgHT9pqHRXtN9FCk7xc8.png', title: 'Marvel\'s Spider-Man Remastered', price: '2,257.00 B' },
-    { imageUrl: 'https://cdn.focus-home.com/fhi-fastforward-admin/resources/games/expeditions-a-mudrunner-game/images/29012025_9e15a72b03cc44259df1b785abd9894c.jpeg', title: 'Expedition A MudRunner Game', price: '1,037.99 B' },
-    { imageUrl: 'https://assets-prd.ignimgs.com/2025/01/29/town-to-city-button-1738159361052.jpg', title: 'Town to City', price: '631.69 B' }
+  newReleases: CardGame[] = [
+    { id: 999, imageUrl: 'https://d1wgd08o7gfznj.cloudfront.net/uploads/gallery_images/2b8db9e8-4753-4950-92ad-e432743a80d1/Box%203D%20Ext%20In%20Real%20Life%20FR_legacy_square_thumb.png', title: 'Cyber Odyssey', price: 799 },
+    { id: 1000, imageUrl: 'https://i.ytimg.com/vi/wLJM4CrJhQ4/maxresdefault.jpg', title: 'The Lost Realm', price: 699 }
   ];
 
-  // ข้อมูลจำลองสำหรับส่วน New Releases
-  newReleases = [
-    { imageUrl: 'https://image.api.playstation.com/vulcan/ap/rnd/202502/1900/631436cfbc1d64659c778e3783f29fafad6022145e0ffec8.jpg', title: 'Forza Horizon 5', price: '1,218.59 B' },
-    { imageUrl: 'https://imgproxy.eneba.games/IRglYcwilNc3GguGGpby0x_x0jFgdFvPVR1ngi-BkR0/rs:fit:350/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9E/YmR4N2loekprNDhi/QVNpX0cwakhFZ3gy/b2JmR1lFX3ROeVdz/anRKNGE0LnBuZw', title: 'Minecraft: Java & Bedrock Edition', price: '1,200.00 B' },
-    { imageUrl: 'https://cdn1.epicgames.com/offer/3ddd6a590da64e3686042d108968a6b2/EGS_GodofWar_SantaMonicaStudio_S2_1200x1600-fbdf3cbc2980749091d52751ffabb7b7_1200x1600-fbdf3cbc2980749091d52751ffabb7b7', title: 'God of War PC', price: '609.09 B' },
-    { imageUrl: 'https://cdn1.epicgames.com/offer/b61e8ddd14e94619b7a74cf9d73f86b5/EGS_EASPORTSFC25StandardEdition_EACanada_S2_1200x1600-6e6b5c1d5d30e15b1dbdde721c6bc544', title: 'EA SPORTS FC 25', price: '2,200 B' }
-  ];
+  constructor(
+    private games: GamesService,
+    private libraryService: LibraryService
+  ) {}
 
+  ngOnInit(): void {
+    this.loadTopSellers();
+  }
 
+  private loadTopSellers(): void {
+    this.loadingTop = true;
+    this.topError = null;
+
+    forkJoin({
+      best: this.games.getTopSellers(),
+      ownedIds: this.libraryService.getOwnedGameIds()
+    })
+      .pipe(
+        map(({ best, ownedIds }: any) => {
+          const ownedSet = new Set(ownedIds);
+          return (best ?? [])
+            .map((g: any) => ({
+              id: g.id,
+              imageUrl: g.image_url ?? g.imageUrl ?? '',
+              title: g.name ?? g.title ?? 'Untitled',
+              price: g.price,
+              qty_sold: g.qty_sold ?? 0, // ✅ รองรับฟิลด์ยอดขาย
+              isOwned: ownedSet.has(g.id)
+            }))
+            // ✅ เรียงจากยอดขายมาก → น้อย
+            .sort((a: CardGame, b: CardGame) => (b.qty_sold ?? 0) - (a.qty_sold ?? 0));
+
+        }),
+        catchError(err => {
+          console.error('[Homepage] loadTopSellers error:', err);
+          this.topError = 'Failed to load Best Sellers';
+          return of([] as CardGame[]);
+        })
+      )
+      .subscribe(list => {
+        this.bestSellers = list;
+        this.loadingTop = false;
+      });
+  }
 }

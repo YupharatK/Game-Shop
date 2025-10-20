@@ -12,8 +12,6 @@ import { GameFormComponent } from './games/game-form/game-form';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UsersComponent } from './users/users';
 import { TransactionComponent } from './transaction/transaction';
-import { DiscountsComponent } from './discounts/discounts';
-import { DiscountFormComponent } from './discounts/discount-form/discount-form';
 import { SharedModule } from "../shared/shared-module";
 
 
@@ -25,8 +23,7 @@ import { SharedModule } from "../shared/shared-module";
     GameFormComponent,
     UsersComponent,
     TransactionComponent,
-    DiscountsComponent,
-    DiscountFormComponent
+    
   ],
   imports: [
     CommonModule,

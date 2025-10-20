@@ -9,6 +9,7 @@ import { ConfigService } from '../core/config'; // 2. ตรวจสอบว�
 
 @Injectable({ providedIn: 'root' })
 export class GamesService {
+ 
   // ควรเป็นโดเมนฐานแบบไม่มี slash ท้าย เช่น 'https://your-backend'
   private base = environment.apiUrl;
 
@@ -59,6 +60,11 @@ getById(id: number): Observable<any> {
     return this.http.get<any>(url);
   }
 
+  getTopSellers(): Observable<GameDto[]> {
+  const url = (this.config.gamesEndpoints as any).getTopSellers
+    ?? `${this.base}/api/games/top-sellers`; // fallback ถ้าใน config ยังไม่มี
+  return this.http.get<GameDto[]>(url);
+}
 }
 
  

@@ -59,30 +59,60 @@ $accent-blue: #000CDE;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
+  align-items: stretch;
+}
+
+.game-card-link {
+  flex: 0 1 240px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .game-card {
-  // สไตล์ของการ์ดจะเรียบง่ายกว่าหน้า Shop
+  background-color: #141852;
   border-radius: 10px;
   overflow: hidden;
-  transition: transform 0.3s;
-  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 430px;
+
 
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   }
 
   .game-image {
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 0.5rem;
   }
 
-  .game-title {
-    font-size: 1.1rem;
-    font-weight: 500;
-    padding: 0 0.5rem; // เพิ่ม padding ซ้ายขวาเล็กน้อย
+ .card-content {
+  padding: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.game-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+  .game-genre {
+    color: #aab2ff;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .game-price {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: auto;
   }
 }

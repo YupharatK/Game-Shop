@@ -7,28 +7,39 @@
         <label for="codeName">Code Name</label>
         <input type="text" id="codeName" placeholder="e.g FREE20" formControlName="codeName">
       </div>
+
       <div class="form-group">
-        <label for="value">Discount Value</label>
-        <input type="text" id="value" placeholder="e.g 20" formControlName="value">
+        <label for="value">Discount Value (%)</label>
+        <input type="number" id="value" placeholder="e.g 20" formControlName="value" step="0.01">
       </div>
+
       <div class="form-group">
         <label for="totalUses">Total Number of Uses Allowed</label>
         <input type="number" id="totalUses" placeholder="e.g 10" formControlName="totalUses">
       </div>
+
       <div class="form-group">
-        <label for="expirationDate">Expiration Date</label>
+        <label for="expirationDate">Expiration Date (mm/dd/yyyy)</label>
         <div class="date-input-container">
           <input type="text" id="expirationDate" placeholder="mm/dd/yyyy" formControlName="expirationDate">
           <fa-icon [icon]="faCalendar"></fa-icon>
         </div>
       </div>
+
+      <!-- ปุ่มอยู่ "ใน" form เพื่อทำงานกับ (ngSubmit) -->
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
+
+        <button type="submit" class="btn-save" [disabled]="discountForm.invalid || isSubmitting">
+          {{ discountToEdit ? (isSubmitting ? 'Saving...' : 'Save Changes') : (isSubmitting ? 'Creating...' : 'Create Code') }}
+        </button>
+
+        <!-- ปุ่มลบ โผล่เฉพาะตอนแก้ไข -->
+        <button *ngIf="discountToEdit" type="button" class="btn-delete" (click)="onDelete()" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
     </form>
-    
-    <div class="modal-actions">
-      <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
-      <button type="submit" class="btn-save" [disabled]="discountForm.invalid">
-        {{ discountToEdit ? 'Save Changes' : 'Create Code' }}
-      </button>
-    </div>
   </div>
 </div>
+

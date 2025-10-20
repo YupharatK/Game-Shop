@@ -1,7 +1,7 @@
-// src/app/user/game-details/game-details.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GamesService } from '../gameservice';
+import { LibraryService } from '../../services/library';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -11,21 +11,44 @@ import { Observable } from 'rxjs';
   styleUrls: ['./game-details.scss']
 })
 export class GameDetails implements OnInit {
-  // เปลี่ยนจาก object ธรรมดาเป็น Observable
   game$!: Observable<any>;
+  isOwned = false;
 
   constructor(
     private route: ActivatedRoute,
-    private gamesService: GamesService
+    private gamesService: GamesService,
+    private libraryService: LibraryService
   ) {}
 
   ngOnInit(): void {
-    // 1. ดึง ID ของเกมจาก URL
     const gameId = Number(this.route.snapshot.paramMap.get('id'));
+    if (!gameId) return;
 
-    // 2. ถ้ามี ID, ให้เรียกใช้ service เพื่อดึงข้อมูลเกม
-    if (gameId) {
-      this.game$ = this.gamesService.getById(gameId);
-    }
+    // โหลดข้อมูลเกม
+    this.game$ = this.gamesService.getById(gameId);
+
+    // ✅ ตรวจจริงว่าเกมนี้อยู่ในคลังผู้ใช้หรือไม่
+    this.libraryService.getOwnedGameIds().subscribe({
+      next: (ids: number[]) => {
+        this.isOwned = ids.includes(gameId);
+      },
+      error: (err) => {
+        console.error('[GameDetails] ตรวจคลังเกมผิดพลาด:', err);
+        this.isOwned = false;
+      }
+    });
+  }
+
+  addToCart(game: any): void {
+    console.log('🛒 Add to cart', game?.id);
+  }
+
+  buyNow(game: any): void {
+    console.log('💳 Buy now', game?.id);
+  }
+
+  playGame(game: any): void {
+    console.log('▶️ Play game', game?.id);
+    alert(`Launching ${game?.name}...`);
   }
 }

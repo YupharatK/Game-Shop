@@ -7,9 +7,18 @@
       <h1 class="game-title">{{ game.name }}</h1>
       <p class="game-price">฿ {{ game.price | number:'1.2-2' }}</p>
       <p class="game-genre">{{ game.genre_name }}</p>
+
       <div class="actions">
-        <button class="btn btn-add">🛒 Add to Cart</button>
-        <button class="btn btn-buy">Buy Now !!</button>
+        <!-- ถ้ายังไม่ได้เป็นเจ้าของ -->
+        <ng-container *ngIf="!isOwned; else ownedBlock">
+          <button class="btn btn-add" (click)="addToCart(game)">🛒 Add to Cart</button>
+          <button class="btn btn-buy" (click)="buyNow(game)">Buy Now !!</button>
+        </ng-container>
+
+        <!-- ถ้าเป็นเจ้าของ -->
+        <ng-template #ownedBlock>
+          <button class="btn btn-play" (click)="playGame(game)">▶️ Play</button>
+        </ng-template>
       </div>
     </div>
   </section>

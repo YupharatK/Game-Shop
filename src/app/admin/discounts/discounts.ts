@@ -1,46 +1,86 @@
 // src/app/admin/discounts/discounts.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { DiscountsService, Discount } from '../services/discount';        // ✅ path ให้ถูก (อยู่โฟลเดอร์เดียวกัน)
+import { DiscountForm } from './discount-form/discount-form'; // ✅ modal form (standalone)
 
 @Component({
   selector: 'app-discounts',
-  standalone: false,
+  standalone: true,                                        // ✅ ทำให้ standalone
+  imports: [CommonModule, FontAwesomeModule, DiscountForm], // ✅ ใช้ fa-icon และ modal
   templateUrl: './discounts.html',
   styleUrls: ['./discounts.scss']
 })
-export class DiscountsComponent {
+export class DiscountsComponent implements OnInit {
   faPlus = faPlus;
   faEdit = faPenToSquare;
   faDelete = faTrash;
 
-  // ข้อมูลโค้ดส่วนลดจำลอง
-  discounts = [
-    { codeName: 'NEWYEAR2025', value: '15%', totalUses: 100, remainingUses: 45, expirationDate: '2025-01-31' },
-    { codeName: 'GAMERTH', value: '100 Baht', totalUses: 50, remainingUses: 12, expirationDate: '2025-12-31' },
-    { codeName: 'WELCOME10', value: '10%', totalUses: 1000, remainingUses: 854, expirationDate: 'N/A' },
-    { codeName: 'FLASH99', value: '99 Baht', totalUses: 200, remainingUses: 0, expirationDate: '2025-09-30' },
-  ];
-
+  discounts: Discount[] = [];
+  loading = false;
+  error: string | null = null;
 
   isDiscountFormOpen = false;
-  currentDiscountForEdit: any | null = null;
+  currentDiscountForEdit: Discount | null = null;
 
-  openDiscountForm(discount: any | null = null): void {
+  constructor(private discountsApi: DiscountsService) {}
+
+  ngOnInit(): void {
+    this.loadDiscounts();
+  }
+
+  loadDiscounts(): void {
+    this.loading = true;
+    this.error = null;
+    this.discountsApi.getAll().subscribe({
+      next: (rows) => {
+        this.discounts = rows ?? [];
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('[Discounts] getAll error:', err);
+        this.error = 'ไม่สามารถดึงรายการส่วนลดได้';
+        this.loading = false;
+      }
+    });
+  }
+    onSaved() {
+      this.reloadAfterChange();   // โหลดรายการใหม่
+      this.closeDiscountForm();   // ✅ ปิดโมดัล
+    }
+
+    onDeleted() {
+      this.reloadAfterChange();
+      this.closeDiscountForm();   // ✅ ปิดโมดัล
+    }
+
+    closeDiscountForm(): void {
+      this.isDiscountFormOpen = false;
+      this.currentDiscountForEdit = null;
+    }
+
+  openDiscountForm(discount: Discount | null = null): void {
     this.currentDiscountForEdit = discount;
     this.isDiscountFormOpen = true;
   }
 
-  closeDiscountForm(): void {
-    this.isDiscountFormOpen = false;
-    this.currentDiscountForEdit = null;
+  reloadAfterChange(): void {
+    this.loadDiscounts();
   }
 
-  handleFormSave(formData: any): void {
-    if (this.currentDiscountForEdit) {
-      console.log('Updating discount:', this.currentDiscountForEdit, 'with', formData);
-    } else {
-      console.log('Adding new discount:', formData);
-    }
-    this.closeDiscountForm();
+  deleteFromList(d: Discount): void {
+    if (!confirm(`ลบโค้ด "${d.code}" ใช่หรือไม่?`)) return;
+    this.discountsApi.delete(d.id).subscribe({
+      next: () => this.loadDiscounts(),
+      error: (err) => console.error('[Discounts] delete error:', err)
+    });
+  }
+
+  remainingUses(d: Discount): number {
+    const remain = (d.max_usage ?? 0) - (d.used_count ?? 0);
+    return remain < 0 ? 0 : remain;
   }
 }
+

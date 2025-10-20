@@ -2,7 +2,7 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // 1. Import UserRoutingModule และ SharedModule เข้ามา
 import { UserRoutingModule } from './user-routing-module';
@@ -33,10 +33,11 @@ import { TopupModalComponent } from './profile/topup-modal/topup-modal';
     EditProfileModalComponent,
     SearchComponent,
     TopupModalComponent
+    
   ],
   imports: [
     CommonModule,
-    // 3. ใส่ UserRoutingModule และ SharedModule ใน imports array
+    FormsModule,
     UserRoutingModule,
     SharedModule,
     FontAwesomeModule,

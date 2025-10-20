@@ -15,12 +15,24 @@
 </div>
 
 <div class="game-grid">
-  <div class="game-card" *ngFor="let game of filtered; trackBy: trackById">
+  <a
+    class="game-card-link game-card"
+    *ngFor="let game of filtered; trackBy: trackById"
+    [routerLink]="['/game-details', game.id]"
+    role="link"
+    [state]="{ from: 'library' }"
+  >
+    <!-- รูปเกม -->
     <img [src]="game.imageUrl" [alt]="game.title" class="game-image">
+
+    <!-- เนื้อหา -->
     <div class="card-content">
       <h3 class="game-title">{{ game.title }}</h3>
+      <p class="game-genre">{{ game.game_type }}</p>
+      <p class="game-price" *ngIf="game.price">฿ {{ game.price | number:'1.2-2' }}</p>
     </div>
-  </div>
+  </a>
 </div>
+
 
 

@@ -1,6 +1,6 @@
-// src/app/admin/users/users.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { AdminService } from '../services/admin'; 
 
 @Component({
   selector: 'app-users',
@@ -8,15 +8,50 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './users.html',
   styleUrls: ['./users.scss']
 })
-export class UsersComponent {
+export class UsersComponent implements OnInit {
   faSearch = faSearch;
 
-  // ข้อมูลผู้ใช้จำลอง
-  users = [
-    { username: 'john_doe', email: 'john.d@example.com', registrationDate: '2025-09-20' },
-    { username: 'jane_smith', email: 'jane.smith@example.com', registrationDate: '2025-09-18' },
-    { username: 'gamer_x', email: 'gamerx@email.com', registrationDate: '2025-09-15' },
-    { username: 'master_chief', email: 'mc117@email.com', registrationDate: '2025-09-12' },
-    { username: 'lara_croft', email: 'lara@tombraider.com', registrationDate: '2025-09-10' }
-  ];
+  users: any[] = [];
+  filtered: any[] = [];
+  loading = false;
+  error: string | null = null;
+
+  // คำค้นหา
+  q = '';
+
+  constructor(private adminApi: AdminService) {}
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.loading = true;
+    this.error = null;
+
+    this.adminApi.getUsers().subscribe({
+      next: (rows) => {
+        this.users = rows ?? [];
+        this.applyFilter();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('[Users] getAll error:', err);
+        this.error = 'ไม่สามารถดึงรายชื่อผู้ใช้ได้';
+        this.loading = false;
+      }
+    });
+  }
+
+  // เรียกตอนพิมพ์ค้นหา
+  applyFilter(): void {
+    const key = (this.q || '').toLowerCase().trim();
+    if (!key) {
+      this.filtered = this.users.slice();
+      return;
+    }
+    this.filtered = this.users.filter(u =>
+      JSON.stringify(u).toLowerCase().includes(key)
+    );
+  }
 }

@@ -1,122 +1,146 @@
-/* src/app/user/shop/shop.component.scss */
+@use 'sass:color';
 
-// Color variables for consistency
+// 🎨 Theme Variables
 $primary-bg: #0A0D3E;
 $text-color: #FFFFFF;
 $accent-blue: #000CDE;
 $card-bg: #141852;
 $button-add-bg: #2a2e6e;
+$text-muted: #aab2ff;
 
 :host {
   display: block;
   background-color: $primary-bg;
   color: $text-color;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
 }
 
+/* 🔹 Layout */
 .shop-container {
-  padding: 2rem 5%; // Add some padding around the container
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 2rem 5%;
 }
 
-// Hero Section Styling
+/* 🔹 Hero Section */
 .hero-section {
-  background-image: linear-gradient(to right, rgba(10, 13, 62, 0.9), rgba(10, 13, 62, 0.4)), url('https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08519_00/12/i_3da1cf7c41dc7652f9b639e1680d96436773658668c7dc3930c441291095713b/i/icon0.png');
-  background-size: cover;
-  background-position: center;
-  border-radius: 15px;
-  padding: 4rem;
-  margin-bottom: 3rem;
+  background: linear-gradient(120deg, #0A0D3E 0%, #141852 100%);
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 
   .hero-content {
-    max-width: 50%;
-    h1 {
-      font-size: 3rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-    .hero-button {
-      background-color: $accent-blue;
-      color: $text-color;
-      border: none;
-      padding: 0.8rem 2rem;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-      &:hover {
-        background-color: lighten($accent-blue, 10%);
-      }
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: $text-muted;
+    margin-bottom: 2rem;
+  }
+
+  .hero-button {
+    background-color: $accent-blue;
+    color: $text-color;
+    border: none;
+    padding: 0.9rem 1.8rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-transform: uppercase;
+
+    &:hover {
+      background-color: color.adjust($accent-blue, $lightness: 10%);
     }
   }
 }
 
-// Game Section Styling (for Best Sellers and New Releases)
+/* 🔹 Section Header */
 .game-section {
-  margin-bottom: 3rem;
-
   h2 {
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 1.8rem;
+    font-weight: 600;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid $card-bg;
+  }
+
+  .info, .error, .empty {
+    color: $text-muted;
+    text-align: center;
+    margin: 1rem 0;
   }
 }
 
-// Game Grid Styling
+/* 🔹 Game Grid */
 .game-grid {
-  display: grid;
+  display: grid; // ✅ ใช้ grid แทน flex
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
+  align-items: stretch; // ✅ ทำให้ทุก card สูงเท่ากันในแถวเดียว
+  justify-items: center;
 }
 
-// Game Card Styling
-.game-card {
+/* 🔹 Game Card */
+a.game-card-link, .game-card {
+  position: relative;
+  width: 100%;
+  max-width: 240px;
+  text-decoration: none;
+  color: inherit;
   background-color: $card-bg;
   border-radius: 10px;
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 496px; // ✅ card สูงเท่ากันทุกใบ
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
   }
 
   .game-image {
     width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 4;
+    height: 280px; // ✅ กำหนดความสูงภาพคงที่
     object-fit: cover;
   }
 
   .game-title {
     font-size: 1.1rem;
     font-weight: 600;
-    margin: 1rem 1rem 0.5rem 1rem;
+    padding: 0.8rem 1rem 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .game-price {
     font-size: 1rem;
-    color: lighten($text-color, 30%);
-    margin: 0 1rem 1rem 1rem;
+    font-weight: 700;
+    color: $text-color;
+    padding: 0 1rem;
+    margin-bottom: 0.8rem;
   }
 
   .button-group {
-    margin-top: auto; // Pushes buttons to the bottom
     display: flex;
-    padding: 0 1rem 1rem 1rem;
     gap: 0.5rem;
+    padding: 0 1rem 1rem;
 
     button {
       flex: 1;
-      padding: 0.7rem;
+      padding: 0.6rem;
       border: none;
       border-radius: 5px;
       font-weight: bold;
@@ -127,12 +151,53 @@ $button-add-bg: #2a2e6e;
     .btn-add {
       background-color: $button-add-bg;
       color: $text-color;
-      &:hover { background-color: lighten($button-add-bg, 10%); }
+      &:hover { background-color: color.adjust($button-add-bg, $lightness: 10%); }
     }
+
     .btn-buy {
       background-color: $accent-blue;
       color: $text-color;
-      &:hover { background-color: lighten($accent-blue, 10%); }
+      &:hover { background-color: color.adjust($accent-blue, $lightness: 10%); }
     }
+  }
+}
+
+/* 🔹 Owned Badge */
+.owned-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  background-color: $button-add-bg;
+  color: $text-muted;
+  border-radius: 5px;
+  font-weight: 600;
+  margin: 0.8rem 1rem 1rem;
+  text-align: center;
+  cursor: default;
+}
+
+/* 🔹 Rank Badge */
+.rank-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: #000cde;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔹 Responsive */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 2rem;
+    h1 { font-size: 2rem; }
+  }
+  .game-grid {
+    gap: 1rem;
   }
 }
