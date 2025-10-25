@@ -19,14 +19,9 @@
       </div>
 
       <div class="form-group">
-        <label for="expirationDate">Expiration Date (mm/dd/yyyy)</label>
-        <div class="date-input-container">
-          <input type="text" id="expirationDate" placeholder="mm/dd/yyyy" formControlName="expirationDate">
-          <fa-icon [icon]="faCalendar"></fa-icon>
-        </div>
+        <label for="expirationDate">Expiration Date</label>
+        <input type="date" id="expirationDate" formControlName="expirationDate">
       </div>
-
-      <!-- ปุ่มอยู่ "ใน" form เพื่อทำงานกับ (ngSubmit) -->
       <div class="modal-actions">
         <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
 
@@ -34,7 +29,6 @@
           {{ discountToEdit ? (isSubmitting ? 'Saving...' : 'Save Changes') : (isSubmitting ? 'Creating...' : 'Create Code') }}
         </button>
 
-        <!-- ปุ่มลบ โผล่เฉพาะตอนแก้ไข -->
         <button *ngIf="discountToEdit" type="button" class="btn-delete" (click)="onDelete()" [disabled]="isSubmitting">
           {{ isSubmitting ? 'Deleting...' : 'Delete' }}
         </button>
@@ -42,4 +36,3 @@
     </form>
   </div>
 </div>
-

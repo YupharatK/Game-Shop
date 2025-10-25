@@ -47,13 +47,15 @@ export class DiscountsComponent implements OnInit {
     });
   }
     onSaved() {
-      this.reloadAfterChange();   // โหลดรายการใหม่
       this.closeDiscountForm();   // ✅ ปิดโมดัล
+      this.reloadAfterChange();   // โหลดรายการใหม่
+      
     }
 
     onDeleted() {
-      this.reloadAfterChange();
       this.closeDiscountForm();   // ✅ ปิดโมดัล
+      this.reloadAfterChange();
+      
     }
 
     closeDiscountForm(): void {
